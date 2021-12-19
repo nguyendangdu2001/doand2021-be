@@ -18,7 +18,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         password,
       );
       const signed = this.jwt.sign({ userId: user.id });
-      console.log(signed);
 
       req.session.eventBuzzjwt = signed;
       done(null, { ...user.toObject(), token: signed });

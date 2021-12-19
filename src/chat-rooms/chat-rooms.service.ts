@@ -19,9 +19,11 @@ export class ChatRoomsService {
   }
   async createFriendChatRoom(createChatRoomDto: CreateChatRoomDto) {
     const room = await this.chatRoomModel.findOne({
-      users: { $all: createChatRoomDto.usersId },
+      usersId: { $all: createChatRoomDto.usersId },
       type: 'PRIVATE',
     });
+    console.log(room, createChatRoomDto);
+
     if (room) return room;
     const chatRoom = await (
       await this.chatRoomModel.create(createChatRoomDto)
@@ -58,8 +60,10 @@ export class ChatRoomsService {
       .populate('lastMessage.fromUser');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chatRoom`;
+  async findOne(id: string) {
+    return await this.chatRoomModel
+      .findById(new Types.ObjectId(id))
+      .populate('users');
   }
   async findOnePrivate(user1: string, user2: string) {
     return await this.chatRoomModel.find({

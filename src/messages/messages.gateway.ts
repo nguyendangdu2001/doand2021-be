@@ -23,12 +23,10 @@ export class MessagesGateway {
   private server: Server;
   @SubscribeMessage('sendMessage')
   async create(@MessageBody() createMessageDto: CreateMessageDto) {
-    console.log(createMessageDto);
-
     const newMess = await this.messagesService.createTextMessage(
       createMessageDto,
     );
-    console.log(newMess);
+
     this.server
       .to(newMess.to.toString())
       .except(newMess.from.toString())

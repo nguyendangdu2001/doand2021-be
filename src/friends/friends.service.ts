@@ -23,12 +23,10 @@ export class FriendsService {
       },
       { users: 1 },
     );
-    console.log(userId, friend);
 
     const friendIds = friend?.map(({ users }) =>
       users?.find((value) => value.toString() !== userId),
     );
-    console.log(friendIds);
 
     return await this.userService.find({
       $and: [{ _id: { $nin: friendIds } }, { _id: { $ne: userId } }],

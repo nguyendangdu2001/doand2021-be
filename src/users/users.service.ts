@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>, // private readonly neo4jService: Neo4jService,
   ) {
-    // console.log(neo4jService);
+    //
   }
 
   async findByUserName(userName: string) {
@@ -60,7 +60,6 @@ export class UsersService {
     return this.userModel.findByIdAndDelete(id);
   }
   async findOrCreateGoogleUser(googleId: string, googleProfile: GoogleProfile) {
-    console.log('go here 2');
     try {
       const user = await this.userModel
         .findOne({ 'google.id': googleId })
@@ -83,8 +82,6 @@ export class UsersService {
         return newUser;
       }
     } catch (error) {
-      console.log(error);
-
       throw new UnauthorizedException();
     }
   }

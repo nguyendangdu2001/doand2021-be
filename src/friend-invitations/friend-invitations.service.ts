@@ -22,20 +22,22 @@ export class FriendInvitationsService {
     return await this.friendInvitationModel.create(createFriendInvitationDto);
   }
   async acceptFriendInvitation(invitationId: string, userId: string) {
-    console.log({ userId, invitationId });
     const invitation = await this.friendInvitationModel.findOneAndDelete({
       _id: new Types.ObjectId(invitationId),
       to: new Types.ObjectId(userId),
     });
-    console.log(invitation);
+    console.log({ invitation });
+
     const friend = await this.friendService.create({
       users: [invitation.from, invitation.to],
       type: 'FRIEND',
     });
-    return await this.chatRoomService.createFriendChatRoom({
+    console.log({ friend });
+    const room = await this.chatRoomService.createFriendChatRoom({
       usersId: friend.users,
       type: 'PRIVATE',
     });
+    console.log({ room });
   }
 
   findAll() {

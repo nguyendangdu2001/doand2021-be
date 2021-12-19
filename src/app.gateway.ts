@@ -17,7 +17,6 @@ export class AppGateway implements OnGatewayConnection {
   constructor(private authService: AuthService) {}
   @SubscribeMessage('whoami')
   handleMessage(@ConnectedSocket() socket: IConnectedSocket) {
-    console.log(socket.data);
     return socket.data?.user;
   }
   @Public()
@@ -26,11 +25,9 @@ export class AppGateway implements OnGatewayConnection {
     @ConnectedSocket() socket: IConnectedSocket,
     @MessageBody() data: { token: string },
   ) {
-    console.log('dadfsdfdsf', data);
     const user = await this.authService.validateWsUser(data?.token);
-    console.log(socket.data);
+
     socket.data = { user, token: data?.token };
-    console.log(socket.data);
 
     socket.join(user.id);
     return { message: 'Success' };
@@ -49,7 +46,6 @@ export class AppGateway implements OnGatewayConnection {
           client.handshake.auth?.token,
         );
         client.data = { user, token: client.handshake.auth?.token };
-        console.log(user.id);
 
         client.join(user.id);
       } catch (error) {}

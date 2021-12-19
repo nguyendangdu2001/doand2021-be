@@ -7,16 +7,12 @@ export class LocalGuard extends AuthGuard('local') implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     // const args = ctx.getArgs();
-    // console.log(args);
+    //
 
     // req.body.username = args.loginInput.userName;
     // req.body.password = args.loginInput.password;
-    console.log(req.body);
-
-    console.log('go here');
 
     const result = (await super.canActivate(context)) as boolean;
-    console.log('go here');
 
     // res.cookies['test'] = 'adsf';
     // await super.logIn(req);

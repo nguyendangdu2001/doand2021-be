@@ -29,8 +29,6 @@ export class AuthService {
   // }
   async validate(userId: string) {
     try {
-      console.log('validate');
-
       const user = await this.userService.findOneById(userId);
       if (!user) throw new UnauthorizedException();
       return user;
@@ -40,8 +38,6 @@ export class AuthService {
   }
   async validateGoogleUser(googleId: string, profile: GoogleProfile) {
     try {
-      console.log('validate');
-
       const user = await this.userService.findOrCreateGoogleUser(
         googleId,
         profile,
@@ -78,7 +74,6 @@ export class AuthService {
       password: await hash(registerInput.password, 'ssdfsaafd'),
     });
     const signed = this.jwt.sign({ userId: user.id });
-    console.log(signed);
 
     req.session.eventBuzzjwt = signed;
     return { ...user.toObject(), token: signed, id: user.id };

@@ -13,7 +13,7 @@
 //     user: User,
 //     done: (err: Error | null, user: string) => void,
 //   ): void {
-//     console.log('serialize', user);
+//
 
 //     done(null, user._id);
 //   }
@@ -24,7 +24,7 @@
 //   ) {
 //     try {
 //       const user = await this.userService.findOneById(id);
-//       console.log('deserialize', user);
+//
 //       done(null, user);
 //     } catch (error) {
 //       done(error);

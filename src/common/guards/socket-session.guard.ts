@@ -22,9 +22,9 @@ export class SocketSessionGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-    console.log('SocketSession activated');
+
     const client = context?.switchToWs()?.getClient<IConnectedSocket>();
-    console.log(client);
+
     const user = await this.authService.validateWsUser(client.data?.token);
     if (user) {
       client.data.user = user;
@@ -49,10 +49,9 @@ export class SocketSessionGuard implements CanActivate {
 
     socket.conn.token = token;
     const { sub } = await jwtService.decode(token);
-    console.log(sub);
 
     socket.conn.userId = sub;
-    console.log(`Setting connection userId to "${sub}"`);
+
     return true;
   }
 }

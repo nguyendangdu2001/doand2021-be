@@ -28,11 +28,9 @@ export class GoogleStrategy extends PassportStrategy(
     done: (error: any, user?: any, info?: any) => void,
   ) {
     try {
-      console.log('in google', profile, req.res.cookie);
       const user = await this.authService.validateGoogleUser(googleId, profile);
-      console.log(req.session.eventBuzzjwt);
+
       const signed = this.jwt.sign({ userId: user.id });
-      console.log(signed);
 
       req.session.eventBuzzjwt = signed;
       done(null, { ...user.toObject(), token: signed });
