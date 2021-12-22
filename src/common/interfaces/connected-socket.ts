@@ -11,4 +11,5 @@ export interface IConnectedSocket extends SocketIO.Socket {
     token?: string;
     user?: UserEntity;
   };
+  room_id: string;
 }

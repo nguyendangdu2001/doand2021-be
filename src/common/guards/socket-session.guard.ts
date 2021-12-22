@@ -24,8 +24,11 @@ export class SocketSessionGuard implements CanActivate {
     }
     console.log('SocketSession activated');
     const client = context?.switchToWs()?.getClient<IConnectedSocket>();
-    console.log(client);
-    const user = await this.authService.validateWsUser(client.data?.token);
+    // console.log(client);
+    const user = await this.authService.validateWsUser(
+      client.data?.token || client?.handshake?.auth?.token,
+    );
+    console.log(user);
     if (user) {
       client.data.user = user;
       return true;

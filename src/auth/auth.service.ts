@@ -61,6 +61,8 @@ export class AuthService {
   }
   async validateWsUser(token: string) {
     const data = this.jwt.verify<{ userId: string }>(token);
+    console.log(data);
+
     if (!data) throw new WsException('UnAuthorized');
     try {
       return await this.validate(data?.userId);

@@ -31,6 +31,25 @@ export class ChatRoomsService {
     });
     return chatRoom;
   }
+  async getOrcreateFriendVideoChatRoom(roomId: string) {
+    const room = await this.chatRoomModel.findOne({
+      of: new Types.ObjectId(roomId),
+      type: 'VIDEO_PRIVATE',
+    });
+    console.log('video room', roomId, room);
+
+    if (room) return room;
+    const chatRoom = await this.chatRoomModel.create({
+      of: new Types.ObjectId(roomId),
+      type: 'VIDEO_PRIVATE',
+    });
+    return chatRoom;
+  }
+  async joinVideoChatRoom(roomId: string, userId: string) {
+    const room = await this.getOrcreateFriendVideoChatRoom(roomId);
+    return room;
+    // const room.update({ $addToSet: { usersId: new Types.ObjectId(userId) } });
+  }
   async createGroupChatRoom(createChatRoomDto: CreateChatRoomDto) {
     const room = await this.chatRoomModel.find({
       usersId: { $all: createChatRoomDto.usersId },
@@ -58,8 +77,8 @@ export class ChatRoomsService {
       .populate('lastMessage.fromUser');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chatRoom`;
+  async findOne(id: string) {
+    return await this.chatRoomModel.findById(id).populate('users');
   }
   async findOnePrivate(user1: string, user2: string) {
     return await this.chatRoomModel.find({
@@ -90,5 +109,17 @@ export class ChatRoomsService {
 
   remove(id: number) {
     return `This action removes a #${id} chatRoom`;
+  }
+  async removeVideoRoom(id: string) {
+    return await this.chatRoomModel.deleteOne({
+      of: new Types.ObjectId(id),
+      type: 'VIDEO_PRIVATE',
+    });
+  }
+  async removeVideoRoomByUser(userId: string) {
+    return await this.chatRoomModel.findOneAndDelete({
+      usersId: new Types.ObjectId(userId),
+      type: 'VIDEO_PRIVATE',
+    });
   }
 }

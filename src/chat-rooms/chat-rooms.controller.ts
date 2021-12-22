@@ -27,7 +27,7 @@ export class ChatRoomsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.chatRoomsService.findOne(+id);
+    return this.chatRoomsService.findOne(id);
   }
 
   @Patch(':id')

@@ -17,7 +17,7 @@ import { AuthController } from './auth.controller';
   imports: [
     UsersModule,
     PassportModule.register({}),
-    JwtModule.register({ secret: 'fsdxfsdfdsf' }),
+    // JwtModule.register({ secret: 'fsdxfsdfdsf' }),
   ],
   providers: [AuthService, GoogleStrategy, JwtStrategy, LocalStrategy],
   controllers: [AuthController],

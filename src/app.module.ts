@@ -14,6 +14,8 @@ import { RelationModule } from './relation/relation.module';
 import { FriendInvitationsModule } from './friend-invitations/friend-invitations.module';
 import { AppGateway } from './app.gateway';
 import { JwtModule } from '@nestjs/jwt';
+import { VideoChatModule } from './video-chat/video-chat.module';
+import { GroupVideoChatModule } from './group-video-chat/group-video-chat.module';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       global: true,
     },
+    VideoChatModule,
+    GroupVideoChatModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthenticatedGuard }, AppGateway],
