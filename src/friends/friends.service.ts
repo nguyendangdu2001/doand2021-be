@@ -34,8 +34,13 @@ export class FriendsService {
       $and: [{ _id: { $nin: friendIds } }, { _id: { $ne: userId } }],
     });
   }
-  findAll() {
-    return `This action returns all friends`;
+  async findAllByUserId(userId: string) {
+    return await this.friendModel
+      .find({ users: new Types.ObjectId(userId) })
+      .populate({
+        path: 'users',
+        match: { _id: { $ne: new Types.ObjectId(userId) } },
+      });
   }
 
   findOne(id: number) {

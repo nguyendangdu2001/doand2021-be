@@ -8,6 +8,7 @@ import {
 } from './entities/friend-invitation.entity';
 import { FriendsModule } from 'src/friends/friends.module';
 import { ChatRoomsModule } from 'src/chat-rooms/chat-rooms.module';
+import { FriendInvitationsGateway } from './friend-invitations.gateway';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { ChatRoomsModule } from 'src/chat-rooms/chat-rooms.module';
     ChatRoomsModule,
   ],
   controllers: [FriendInvitationsController],
-  providers: [FriendInvitationsService],
+  providers: [FriendInvitationsService, FriendInvitationsGateway],
 })
 export class FriendInvitationsModule {}

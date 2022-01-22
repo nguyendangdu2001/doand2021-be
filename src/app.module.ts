@@ -15,7 +15,8 @@ import { FriendInvitationsModule } from './friend-invitations/friend-invitations
 import { AppGateway } from './app.gateway';
 import { JwtModule } from '@nestjs/jwt';
 import { VideoChatModule } from './video-chat/video-chat.module';
-import { GroupVideoChatModule } from './group-video-chat/group-video-chat.module';
+// import { GroupVideoChatModule } from './group-video-chat/group-video-chat.module';
+import { RandomChatQueueModule } from './random-chat-queue/random-chat-queue.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { GroupVideoChatModule } from './group-video-chat/group-video-chat.module
       global: true,
     },
     VideoChatModule,
-    GroupVideoChatModule,
+    RandomChatQueueModule,
+    // GroupVideoChatModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthenticatedGuard }, AppGateway],

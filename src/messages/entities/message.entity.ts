@@ -6,9 +6,16 @@ export type MessageDocument = Message & Document;
 export type MediaMessageDocument = MediaMessage & Document;
 export type TextMessageDocument = TextMessage & Document;
 export type AudioMessageDocument = AudioMessage & Document;
+@Schema({ _id: false })
+class File {
+  @Prop()
+  link: string;
+  @Prop()
+  name: string;
+}
+export const FileSchema = SchemaFactory.createForClass(File);
 @Schema({
   timestamps: true,
-  discriminatorKey: 'kind',
   toJSON: { virtuals: true },
 })
 export class Message {
@@ -21,7 +28,13 @@ export class Message {
   @Prop()
   kind: string;
   @Prop()
+  type: string;
+  @Prop()
   deleted: boolean;
+  @Prop()
+  content: string;
+  @Prop({ type: [FileSchema] })
+  files?: File[];
   fromUser: User;
   replyComment: Message;
   createdAt: Date;
@@ -67,3 +80,12 @@ export class AudioMessage extends BaseMessage {
   media: string;
 }
 export const AudioMessageSchema = SchemaFactory.createForClass(AudioMessage);
+@Schema()
+export class FileMessage extends BaseMessage {
+  @Prop()
+  content: string;
+
+  @Prop()
+  media: string;
+}
+export const FileMessageSchema = SchemaFactory.createForClass(FileMessage);

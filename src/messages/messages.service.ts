@@ -20,12 +20,12 @@ export class MessagesService {
   constructor(
     @InjectModel(Message.name)
     private readonly messageModel: Model<MessageDocument>,
-    @InjectModel(TextMessage.name)
-    private readonly textMessageModel: Model<TextMessageDocument>,
-    @InjectModel(MediaMessage.name)
-    private readonly mediaMessageModel: Model<MediaMessageDocument>,
-    @InjectModel(AudioMessage.name)
-    private readonly audioMessageModel: Model<AudioMessageDocument>,
+    // @InjectModel(TextMessage.name)
+    // private readonly textMessageModel: Model<TextMessageDocument>,
+    // @InjectModel(MediaMessage.name)
+    // private readonly mediaMessageModel: Model<MediaMessageDocument>,
+    // @InjectModel(AudioMessage.name)
+    // private readonly audioMessageModel: Model<AudioMessageDocument>,
     private chatRoomService: ChatRoomsService,
   ) {}
   create(createMessageDto: CreateMessageDto) {
@@ -33,31 +33,53 @@ export class MessagesService {
   }
   async createTextMessage(createMessageDto: CreateMessageDto) {
     const newMessage = await (
-      await this.textMessageModel.create({
+      await this.messageModel.create({
         ...createMessageDto,
+        replyId: new Types.ObjectId(createMessageDto.replyId),
         from: new Types.ObjectId(createMessageDto.from),
         to: new Types.ObjectId(createMessageDto.to),
       })
-    ).populate('fromUser');
-
+    ).populate([
+      { path: 'fromUser' },
+      { path: 'replyComment', populate: { path: 'fromUser' } },
+    ]);
     this.chatRoomService.updateLastMessage(newMessage);
     return newMessage;
   }
   async createMediaMessage(createMessageDto: CreateMessageDto) {
-    const newMessage = await this.mediaMessageModel.create(createMessageDto);
+    const newMessage = await this.messageModel.create(createMessageDto);
     this.chatRoomService.updateLastMessage(newMessage);
     return newMessage;
   }
   async createAudioMessage(createMessageDto: CreateMessageDto) {
-    const newMessage = await this.audioMessageModel.create(createMessageDto);
+    const newMessage = await this.messageModel.create(createMessageDto);
     this.chatRoomService.updateLastMessage(newMessage);
     return newMessage;
   }
   async findMessageByChatId(chatId: string) {
     const messages = await this.messageModel
       .find({ to: new Types.ObjectId(chatId) })
-      .populate('fromUser');
+      .populate([
+        { path: 'fromUser' },
+        { path: 'replyComment', populate: { path: 'fromUser' } },
+      ]);
     return messages;
+  }
+  async findMediaByChatId(chatId: string) {
+    const messages = await this.messageModel.find({
+      to: new Types.ObjectId(chatId),
+      type: 'IMAGE',
+    });
+    const media = messages?.reduce((all, cur) => [...all, ...cur?.files], []);
+    return media;
+  }
+  async findFileByChatId(chatId: string) {
+    const messages = await this.messageModel.find({
+      to: new Types.ObjectId(chatId),
+      type: 'FILE',
+    });
+    const media = messages?.reduce((all, cur) => [...all, ...cur?.files], []);
+    return media;
   }
 
   findAll() {

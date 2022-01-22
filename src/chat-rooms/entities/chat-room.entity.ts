@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Type } from 'class-transformer';
 import { Document, Types } from 'mongoose';
 import { Message, MessageSchema } from 'src/messages/entities/message.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserEntity } from 'src/users/entities/user.entity';
 export type ChatRoomDocument = ChatRoom & Document;
 @Schema({
   timestamps: true,
@@ -10,16 +10,18 @@ export type ChatRoomDocument = ChatRoom & Document;
     virtuals: true,
   },
 })
-export class ChatRoom extends Document {
+export class ChatRoom {
   @Prop({ type: [Types.ObjectId], ref: User.name })
   usersId: Types.ObjectId[];
-  users?: User[];
+  users?: UserEntity[];
   @Prop()
   type: string;
   @Prop({ type: MessageSchema })
   lastMessage?: Message;
   @Prop({ type: Types.ObjectId, ref: ChatRoom.name })
   of?: Types.ObjectId;
+  @Prop()
+  name: string;
   createdAt: Date;
   updatedAt: Date;
 }

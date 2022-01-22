@@ -19,14 +19,14 @@ export class ChatRoomsService {
   }
   async createFriendChatRoom(createChatRoomDto: CreateChatRoomDto) {
     const room = await this.chatRoomModel.findOne({
-      users: { $all: createChatRoomDto.usersId },
+      usersId: { $all: createChatRoomDto.usersId },
       type: 'PRIVATE',
     });
     if (room) return room;
     const chatRoom = await (
       await this.chatRoomModel.create(createChatRoomDto)
     ).populate('users');
-    chatRoom.users.map((user) => {
+    chatRoom.usersId.map((user) => {
       this.chatRoomGateway.newChatRoom(user.toString(), chatRoom);
     });
     return chatRoom;
@@ -80,6 +80,7 @@ export class ChatRoomsService {
   async findOne(id: string) {
     return await this.chatRoomModel.findById(id).populate('users');
   }
+
   async findOnePrivate(user1: string, user2: string) {
     return await this.chatRoomModel.find({
       type: 'PRIVATE',
@@ -100,7 +101,10 @@ export class ChatRoomsService {
       { new: true },
     );
     chatRoom.lastMessage = message;
-    this.chatRoomGateway.newChatRoomMessage(chatRoom);
+    this.chatRoomGateway.newChatRoomMessage({
+      ...chatRoom?.toObject(),
+      lastMessage: message,
+    } as any);
   }
 
   update(id: number, updateChatRoomDto: UpdateChatRoomDto) {

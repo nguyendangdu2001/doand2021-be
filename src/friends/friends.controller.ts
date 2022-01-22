@@ -23,8 +23,8 @@ export class FriendsController {
   }
 
   @Get()
-  findAll() {
-    return this.friendsService.findAll();
+  findAll(@User() user: UserEntity) {
+    return this.friendsService.findAllByUserId(user?._id);
   }
   @Get('/action/find-strangers')
   findStrangers(@User() user: UserEntity) {

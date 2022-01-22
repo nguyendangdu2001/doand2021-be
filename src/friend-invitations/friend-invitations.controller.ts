@@ -13,22 +13,32 @@ import { UpdateFriendInvitationDto } from './dto/update-friend-invitation.dto';
 import { User } from 'src/common/decorators';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { Types } from 'mongoose';
+import { FriendInvitationsGateway } from './friend-invitations.gateway';
 
 @Controller('friend-invitations')
 export class FriendInvitationsController {
   constructor(
     private readonly friendInvitationsService: FriendInvitationsService,
+    private readonly friendInvitationGateway: FriendInvitationsGateway,
   ) {}
 
   @Post()
-  create(
+  async create(
     @Body() createFriendInvitationDto: CreateFriendInvitationDto,
     @User() user: UserEntity,
   ) {
-    return this.friendInvitationsService.create({
+    const invitation = await this.friendInvitationsService.create({
       from: new Types.ObjectId(user.id),
       to: new Types.ObjectId(createFriendInvitationDto.to),
     });
+    this.friendInvitationGateway.newFriendInvitaiton(
+      createFriendInvitationDto.to?.toString(),
+    );
+    return invitation;
+  }
+  @Post('/action/decline/:id')
+  decline(@Param('id') invitationId: string, @User() user: UserEntity) {
+    return this.friendInvitationsService.remove(invitationId);
   }
   @Post('/action/accept/:id')
   accpet(@Param('id') invitationId: string, @User() user: UserEntity) {

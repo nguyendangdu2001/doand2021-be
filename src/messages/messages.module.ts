@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesGateway } from './messages.gateway';
 import {
@@ -20,15 +20,16 @@ import { ChatRoomsModule } from 'src/chat-rooms/chat-rooms.module';
       {
         name: Message.name,
         schema: MessageSchema,
-        discriminators: [
-          { name: TextMessage.name, schema: TextMessageSchema },
-          { name: MediaMessage.name, schema: MediaMessageSchema },
-          { name: AudioMessage.name, schema: AudioMessageSchema },
-        ],
+        // discriminators: [
+        //   { name: TextMessage.name, schema: TextMessageSchema },
+        //   { name: MediaMessage.name, schema: MediaMessageSchema },
+        //   { name: AudioMessage.name, schema: AudioMessageSchema },
+        // ],
       },
     ]),
-    ChatRoomsModule,
+    forwardRef(() => ChatRoomsModule),
   ],
   providers: [MessagesGateway, MessagesService],
+  exports: [MessagesService],
 })
 export class MessagesModule {}
